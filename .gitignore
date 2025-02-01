@@ -1,3 +1,5 @@
 .env
-dataset/genCry_s.csv
-dataset/genCry.csv
+data/genCry_s.csv
+data/genCry.csv
+data/alexandria/alexandria_pbe.csv
+data/Jarvis/jarvis.csv
