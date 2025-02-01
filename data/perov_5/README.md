@@ -1,18 +1,24 @@
 # Perov-5
 
-Perov-5 contains 18928 perovskite materials, which share similar structure, but has different composition. There are 56 elements and all materials have 5 atoms in the unit cell.
+Perov-5 contains 18,928 perovskite materials that share a similar structure but have different chemical compositions. There are 56 elements present, and all materials contain 5 atoms in the unit cell. All materials from the original dataset are included. All materials are at local energy minima after DFT relaxation. A significant portion of the materials is thermodynamically unstable, meaning they will decompose into nearby phases and cannot be synthesized.
 
-## What is in the dataset?
+## Contents of the dataset
 
 Perovskite is a class of materials that share a similar structure and have the general chemical formula ABX3. The ideal perovskites have a cubic structure, where the site A atom sits at a corner position, the site B atom sits at a body centered position and site X atoms sit at face centered positions. Most structures in Perov-5 will signficantly deviate from the ideal cubic structure because the distorted structure has a lower energy.
 
-## Stability of curated materials
-
-All 18928 materials in the original database are included. All materials are at local energy minimum after DFT relaxation. A significant portion of the materials are not thermodynamically stable, i.e., they will decompose to nearby phases and cannot be synthesized.
-
 ## Citation
 
-Please consider citing the following two papers:
+Edited dataset:
+```
+@article{xie2021crystal,
+  title={Crystal Diffusion Variational Autoencoder for Periodic Material Generation},
+  author={Xie, Tian and Fu, Xiang and Ganea, Octavian-Eugen and Barzilay, Regina and Jaakkola, Tommi},
+  journal={arXiv preprint arXiv:2110.06197},
+  year={2021}
+}
+```
+
+Original dataset:
 
 ```
 @article{castelli2012new,

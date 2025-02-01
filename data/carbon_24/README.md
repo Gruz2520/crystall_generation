@@ -1,18 +1,25 @@
-# Carbon-24
+# Carbon_24
 
-Carbon-24 contains 10k carbon materials, which share the same composition, but have different structures. There is 1 element and the materials have 6 - 24 atoms in the unit cells.
+Carbon_24 consists of 10k carbon materials that share the same composition but exhibit different structures. It encompasses 1 element, and the materials contain between 6 and 24 atoms in their unit cells. All 10,153 structures are situated at a local energy minimum following DFT relaxation, with the most stable configuration being diamond at 10 GPa. The other structures, while thermodynamically unstable, may still be kinetically stable.
 
-## What is in the dataset?
+## Dataset contents
 
-Carbon-24 includes various carbon structures obtained via *ab initio* random structure searching (AIRSS) (Pickard & Needs, 2006; 2011) performed at 10 GPa.
+Carbon_24 features a variety of carbon structures generated through ab initio random structure searching (AIRSS) (Pickard & Needs, 2006; 2011) conducted at 10 GPa.
 
-## Stability of curated materials
-
-The original dataset includes 101529 carbon structures, and we selected the 10% of the carbon structure with the lowest energy per atom to create Carbon-24. All 10153 structures are at local energy minimum after DFT relaxation. The most stable structure is diamond at 10 GPa. All remaining structures are thermodynamically unstable but may be kinetically stable.
 
 ## Citation
 
-Please consider citing the following paper:
+Edited dataset:
+```
+@article{xie2021crystal,
+  title={Crystal Diffusion Variational Autoencoder for Periodic Material Generation},
+  author={Xie, Tian and Fu, Xiang and Ganea, Octavian-Eugen and Barzilay, Regina and Jaakkola, Tommi},
+  journal={arXiv preprint arXiv:2110.06197},
+  year={2021}
+}
+```
+
+Original dataset:
 
 ```
 @misc{carbon2020data,
