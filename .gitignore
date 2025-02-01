@@ -3,3 +3,4 @@ data/genCry_s.csv
 data/genCry.csv
 data/alexandria/alexandria_pbe.csv
 data/Jarvis/jarvis.csv
+notebooks/scr/__pycache__/

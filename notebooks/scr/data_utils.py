@@ -1,5 +1,9 @@
 import pandas as pd
 from typing import List, Optional
+from pymatgen.core.structure import Structure
+from pymatgen.io.cif import CifParser
+from io import StringIO
+from tqdm import tqdm
 
 def combine_csv_files(
     file_paths: List[str], 
@@ -24,3 +28,53 @@ def combine_csv_files(
         print(f"Combined data saved to file: {output_file}")
     
     return combined_df
+
+
+def filter_structures_from_dataframe(
+    dataframe: pd.DataFrame,
+    cif_column: str = "cif",
+    material_id_column: str = "material_id",
+    num_of_atoms: int = 2,
+    output_file: Optional[str] = None
+) -> pd.DataFrame:
+    """
+    Filters structures from a DataFrame containing CIF strings based on the number of atoms.
+    Returns a new DataFrame with only the structures that have more than the specified number of atoms.
+
+    :param dataframe: Input DataFrame containing CIF strings and material IDs.
+    :param cif_column: Name of the column in the DataFrame that contains the CIF strings. Default is "cif".
+    :param material_id_column: Name of the column in the DataFrame that contains the material IDs. Default is "material_id".
+    :param num_of_atoms: Minimum number of atoms a structure must have to be included in the result. Default is 2.
+    :param output_file: Path to the file where the filtered DataFrame will be saved. If None, the file is not saved.
+    :return: A DataFrame containing the filtered structures with their material IDs and CIF strings.
+    """
+    filtered_data = []
+
+    for index, row in tqdm(dataframe.iterrows(), total=len(dataframe)):
+        mat_id = row[material_id_column]
+        cif_string = row[cif_column]
+
+        try:
+            # Convert the CIF string into a file-like object for parsing
+            cif_file_like = StringIO(cif_string)
+
+            # Parse the CIF string into a pymatgen Structure object
+            parser = CifParser(cif_file_like)
+            structure = parser.get_structures()[0]
+
+            # Check if the structure has more than the specified number of atoms
+            if len(structure) > num_of_atoms:
+                filtered_data.append({
+                    material_id_column: mat_id,
+                    cif_column: cif_string
+                })
+        except Exception as e:
+            print(f"Error processing row {index}: {e}")
+
+    filtered_df = pd.DataFrame(filtered_data)
+    
+    if output_file:
+        filtered_df.to_csv(output_file, index=False)
+        print(f"Filtered data saved to file: {output_file}")
+    
+    return filtered_df
