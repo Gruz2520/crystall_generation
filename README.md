@@ -4,8 +4,18 @@ This repo for project about generation srystall structures with LLM.
 ## Installation
 
 ### Cloning
-
-
+First do a cloning of the repository.
+```bash
+git clone https://github.com/Gruz2520/crystall_generation.git
+```
+Change directory of the cloned repository:
+```bash
+cd crystall_generation
+```
+Install the required dependencies from the `requirements.txt` file:
+```bash
+pip install -r requirements.txt
+```
 ### Datasets
 All information about datasets is directly available in `data/`. We use open-source datasets, and their citations are available in the same path. You don't need to download them again—just unpack a few of them. You can unpack them using our [unpack script](#unpacking).
 
