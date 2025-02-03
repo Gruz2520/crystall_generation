@@ -7,17 +7,18 @@ This repo for project about generation srystall structures with LLM.
 
 
 ### Datasets
-All information about datasets directly available on `data\`. Used opensource datasets with their citation available at the same path. You don't need download them again, just unpack few of them. You can unpack them with our [unpack script](#unpacking). 
+All information about datasets is directly available in `data/`. We use open-source datasets, and their citations are available in the same path. You don't need to download them again—just unpack a few of them. You can unpack them using our [unpack script](#unpacking).
 
-Find more about our dataset **genCry** and others by going to [Datasets](data/) page.
+Learn more about our dataset **genCry** and others by visiting the [Datasets](data/) page.
+
 
 ### Unpacking
-For unpack all datasets you can use unpacking script.\
-If you want just unpack, you need start this script without any parameters
+To unpack all datasets, you can use the unpacking script.  
+If you want to simply unpack the datasets, run the script without any parameters:
 ```bash
 python notebooks/scr/unpacking.py
 ```
-Add a flag '-f' or '--filter' to enable dataset filtering for main dataset
+Add the `-f` or `--filter` flag to enable dataset filtering for the main dataset:
 ```bash
 python notebooks/scr/unpacking.py -f
 ```
