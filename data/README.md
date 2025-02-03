@@ -7,6 +7,8 @@ Our dataset is a combination of datasets such as: [Alexandria](alexandria/), [ca
 
 Filtering by original dataset was performed to exclude duplicates, crystals with less than 2 atoms, and broken CIF files. The definition of a broken CIF file was done by converting to Structure from the [pymatgen](https://pymatgen.org/) library. The filtering algorithm can be found [here.](../notebooks/scr/data_utils.py)
 
+In rep you will find genCry.7z and genCry_f.7z You can extend them yourself or use or [unpacking script](#unpacking). genCry_f.7z contains the original dataset, the other file contains the merged dataset without filters.
+
 ## Visualization
 
 <p align="center">

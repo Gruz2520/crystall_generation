@@ -34,7 +34,7 @@ if __name__ == '__main__':
 
     if args.filter:
         print("Starting filtering main dataset...")
-        filter_structures_from_dataframe(dataframe=pd.read_csv("data/genCry.csv"), output_file="data/genCry_f.csv")
+        filter_structures_from_dataframe(dataframe=pd.read_csv("data/genCry_no_filter.csv"), output_file="data/genCry.csv")
         print("Main dataset successfully filtered. Filtered dataset: data/genCry_f.csv")
     else:
         extract_7z_archive("data/genCry_f.7z", "data/")
