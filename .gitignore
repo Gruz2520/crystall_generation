@@ -1,6 +1,7 @@
 .env
 data/genCry_f.csv
 data/genCry.csv
+data/genCry_columns.csv
 data/alexandria/alexandria_pbe.csv
 data/Jarvis/jarvis.csv
 notebooks/scr/__pycache__/
