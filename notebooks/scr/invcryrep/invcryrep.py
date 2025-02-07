@@ -38,6 +38,8 @@ from functools import wraps
 import itertools
 import copy
 import m3gnet.models
+from pymatgen.io.cif import CifParser
+from io import StringIO
 logging.captureWarnings(False)
 tf.get_logger().setLevel(logging.ERROR)
 tf.config.threading.set_inter_op_parallelism_threads(1)
@@ -104,13 +106,16 @@ class InvCryRep:
         self.unstable_graph = False  # unstable graph flag
         self.fmax=fmax
         self.steps=steps
-        model_path=m3gnet.models.__path__[0]+'/MP-2021.2.8-EFS/'
+        model_path='/MP-2021.2.8-EFS/'
         # copy m3gnet model file?
-        if not os.path.isdir(model_path):
-            data_path=os.path.dirname(__file__)+'/MP-2021.2.8-EFS'
-            subprocess.call(['mkdir','-p', model_path])
-            subprocess.call(['cp',data_path+'/checkpoint',data_path+'/m3gnet.data-00000-of-00001',\
-            data_path+'/m3gnet.index',data_path+'/m3gnet.json',model_path])
+        
+        # we don't use m3gnet for understanding energy of structure 
+        
+        # if not os.path.isdir(model_path):
+        #     data_path=os.path.dirname(__file__)+'/MP-2021.2.8-EFS'
+        #     subprocess.call(['mkdir','-p', model_path])
+        #     subprocess.call(['cp',data_path+'/checkpoint',data_path+'/m3gnet.data-00000-of-00001',\
+        #     data_path+'/m3gnet.index',data_path+'/m3gnet.json',model_path])
         self.relaxer = Relaxer(optimizer=optimizer)
 
     def check_element(self):
@@ -645,7 +650,7 @@ class InvCryRep:
             to_jimages.append(to_jimage)
         return self.get_slices_by_strategy(strategy,atom_symbols,edge_indices,to_jimages)
 
-    def structure2SLICES2(self, cif_path):
+    def structure2SLICES2(self, structure):
         rotation_letter = {
         "[1, 1, 1]": "a",
         "[1, 1, -1]": "b",
@@ -705,7 +710,6 @@ class InvCryRep:
                     closest = key
             return closest
 
-        structure = Structure.from_file(cif_path)
         sg_analyzer = SpacegroupAnalyzer(structure)
         symmetry_operations = sg_analyzer.get_symmetry_operations()
         encoded_matrices = []
@@ -736,12 +740,19 @@ class InvCryRep:
 
         return slices_2
     
-    def concatenate_slices(self, structure, cif_path, strategy=3):
+    def concatenate_slices(self, cif_string, strategy=3):
+        # Convert the CIF string into a file-like object for parsing
+        cif_file_like = StringIO(cif_string)
+
+        # Parse the CIF string into a pymatgen Structure object
+        parser = CifParser(cif_file_like)
+        structure = parser.get_structures()[0]
+        
         slices_part1 = self.structure2SLICES(structure, strategy)
-        slices_part2 = self.structure2SLICES2(cif_path)
+        slices_part2 = self.structure2SLICES2(structure)
         full_slices = slices_part1 + '' + slices_part2
         
-        return full_slices
+        return slices_part1, slices_part2, full_slices
 
     def structure2SLICESAug(self,structure,strategy=3,num=200):
         """ Convert Structure to SLICES and conduct data augmentation.
