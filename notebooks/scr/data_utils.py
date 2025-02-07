@@ -5,6 +5,7 @@ from pymatgen.io.cif import CifParser
 from io import StringIO
 from tqdm import tqdm
 import warnings
+from scr.invcryrep.invcryrep import InvCryRep
 
 def combine_csv_files(
     file_paths: List[str], 
@@ -85,3 +86,44 @@ def filter_structures_from_dataframe(
         print(f"Filtered data saved to file: {output_file}")
     
     return filtered_df
+
+
+def calculate_slices_for_dataset(
+    dataset: pd.DataFrame,
+    cif_column: str = "cif",
+    output_file: Optional[str] = None
+) -> pd.DataFrame:
+    """
+    Calculates SLICES for each CIF file in the dataset and adds the results to the DataFrame.
+    Optionally saves the resulting DataFrame to a specified path.
+
+    :param dataset: Input DataFrame containing CIF strings.
+    :param cif_column: Name of the column in the DataFrame that contains the CIF strings. Default is "cif".
+    :param output_file: Path to save the resulting DataFrame as a CSV file. If None, the file is not saved.
+    :return: A DataFrame with added columns for SLICES (SLICE, SLICE PLUS).
+    """
+    backend = InvCryRep()
+
+    # Add new columns for SLICES
+    dataset['SLICE'] = None
+    dataset['SLICE PLUS'] = None
+
+    for index, row in tqdm(dataset.iterrows(), total=len(dataset), desc="Converting CIF to SLICE"):
+        cif = row[cif_column]
+        try:
+            # Calculate SLICES for the current CIF file
+            slice_part1, _, final_slice = backend.concatenate_slices(cif)
+            
+            dataset.at[index, 'SLICE'] = slice_part1
+            dataset.at[index, 'SLICE PLUS'] = final_slice
+        except Exception as e:
+            print(f"Error processing CIF file at row {index}: {e}")
+            dataset.at[index, 'SLICE'] = None
+            dataset.at[index, 'SLICE PLUS'] = None
+
+    # Save the result to a file if a path is provided
+    if output_file:
+        dataset.to_csv(output_file, index=False)
+        print(f"Results saved to {output_file}")
+
+    return dataset
