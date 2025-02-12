@@ -104,22 +104,22 @@ def calculate_slices_for_dataset(
     """
     backend = InvCryRep()
 
-    # Add new columns for SLICES
+    # Initialize new columns for SLICES
     dataset['SLICE'] = None
     dataset['SLICE PLUS'] = None
 
-    for index, row in tqdm(dataset.iterrows(), total=len(dataset), desc="Converting CIF to SLICE"):
+    def process_cif(row):
         cif = row[cif_column]
         try:
             # Calculate SLICES for the current CIF file
             slice_part1, _, final_slice = backend.concatenate_slices(cif)
-            
-            dataset.at[index, 'SLICE'] = slice_part1
-            dataset.at[index, 'SLICE PLUS'] = final_slice
+            return pd.Series([slice_part1, final_slice])
         except Exception as e:
-            print(f"Error processing CIF file at row {index}: {e}")
-            dataset.at[index, 'SLICE'] = None
-            dataset.at[index, 'SLICE PLUS'] = None
+            # print(f"Error processing CIF file at row {row.name}: {e}")
+            return pd.Series([None, None])
+
+    tqdm.pandas(desc="Converting CIF to SLICE")
+    dataset[['SLICE', 'SLICE PLUS']] = dataset.progress_apply(process_cif, axis=1)
 
     # Save the result to a file if a path is provided
     if output_file:

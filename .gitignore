@@ -5,3 +5,4 @@ data/genCry_columns.csv
 data/alexandria/alexandria_pbe.csv
 data/Jarvis/jarvis.csv
 notebooks/scr/__pycache__/
+data/genCry_columns_slice.csv
