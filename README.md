@@ -1,5 +1,5 @@
 # Crystall Generation with LLMs
-This repo for project about generation srystall structures with LLM.
+This repo for project about generation crystall structures with LLM.
 
 ## Installation
 
