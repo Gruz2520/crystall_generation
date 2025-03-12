@@ -3,13 +3,13 @@ from datasets import Dataset
 from transformers import AutoModelForCausalLM, TrainingArguments, Trainer, AutoTokenizer
 
 # Загрузка CSV файла
-df = pd.read_csv('../data/df_for_llama_m100.csv')
+df = pd.read_csv('crystall_generation/data/df_for_llama_m100.csv')
 
 # Преобразование DataFrame в Dataset
 dataset = Dataset.from_pandas(df)
 
 # Загрузка токенизатора LLaMA
-model_name = "../models/llama"  # Укажите актуальную версию LLaMA
+model_name = "crystall_generation/models/llama"  # Укажите актуальную версию LLaMA
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 
 # Добавление специального токена EOS (End of Sentence)
@@ -49,7 +49,7 @@ lora_config = LoraConfig(
 model = get_peft_model(model, lora_config)
 
 training_args = TrainingArguments(
-    output_dir="../finetune/results/",
+    output_dir="crystall_generation/finetune/results/",
     evaluation_strategy="epoch",
     learning_rate=2e-5,
     per_device_train_batch_size=4,
@@ -58,7 +58,7 @@ training_args = TrainingArguments(
     weight_decay=0.01,
     save_steps=500,
     save_total_limit=2,
-    logging_dir='../finetune/logs/',
+    logging_dir='crystall_generation/finetune/logs/',
     logging_steps=10,
     fp16=True,  # Использование mixed precision для ускорения
     push_to_hub=False,  # Если вы хотите загрузить модель на Hugging Face Hub
@@ -80,8 +80,8 @@ from transformers import AutoModelForCausalLM, TrainingArguments, Trainer
 from transformers import AutoTokenizer
 
 # Загрузка fine-tuned модели
-model = AutoModelForCausalLM.from_pretrained("../models/fine_tuned_Llama-3.2-3b")
-tokenizer = AutoTokenizer.from_pretrained("../models/fine_tuned_Llama-3.2-3b")
+model = AutoModelForCausalLM.from_pretrained("crystall_generation/models/fine_tuned_Llama-3.2-3b")
+tokenizer = AutoTokenizer.from_pretrained("crystall_generation/models/fine_tuned_Llama-3.2-3b")
 
 # Создание пайплайна для генерации текста
 generator = pipeline("text-generation", model=model, tokenizer=tokenizer)
