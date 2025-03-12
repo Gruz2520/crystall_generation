@@ -6,3 +6,10 @@ data/alexandria/alexandria_pbe.csv
 data/Jarvis/jarvis.csv
 notebooks/scr/__pycache__/
 data/genCry_columns_slice.csv
+notebooks/lora_model/
+Llama-3.2-3B-Instruct
+models/Llama
+models/lora_finetuned_model_gpt2
+models/llama.tar.gz
+models/llama_split_parts
+notebooks/archive.ipynb
