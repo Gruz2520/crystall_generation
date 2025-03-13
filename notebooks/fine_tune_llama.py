@@ -1,46 +1,45 @@
 import pandas as pd
 from datasets import Dataset
 from transformers import AutoModelForCausalLM, TrainingArguments, Trainer, AutoTokenizer
+from peft import LoraConfig, get_peft_model
+from torch.utils.tensorboard import SummaryWriter  # For TensorBoard
 
-# Загрузка CSV файла
+# Load CSV file
 df = pd.read_csv('crystall_generation/data/df_for_llama_m100.csv')
 
-# Преобразование DataFrame в Dataset
+# Convert DataFrame to Dataset
 dataset = Dataset.from_pandas(df)
 
-# Загрузка токенизатора LLaMA
-model_name = "crystall_generation/models/llama"  # Укажите актуальную версию LLaMA
+# Load LLaMA tokenizer
+model_name = "crystall_generation/models/llama"  # Specify the actual version of LLaMA
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 
-# Добавление специального токена EOS (End of Sentence)
+# Add a special EOS (End of Sentence) token
 tokenizer.pad_token = tokenizer.eos_token
 
-# Функция для токенизации данных
+# Function for tokenizing data
 def preprocess_function(examples):
     inputs = examples['input']
     outputs = examples['output']
     
-    # Склеиваем вход и выход с помощью токенизатора
+    # Tokenize input and output
     model_inputs = tokenizer(inputs, max_length=512, truncation=True, padding='max_length')
     labels = tokenizer(outputs, max_length=512, truncation=True, padding='max_length')
     
     model_inputs['labels'] = labels['input_ids']
     return model_inputs
 
-# Применяем функцию предобработки к датасету
+# Apply preprocessing function to the dataset
 tokenized_dataset = dataset.map(preprocess_function, batched=True)
 
-
-# Загрузка модели
+# Load the model
 model = AutoModelForCausalLM.from_pretrained(model_name)
 
-# Если вы хотите использовать метод LoRA (Low-Rank Adaptation) для экономии ресурсов:
-from peft import LoraConfig, get_peft_model
-
+# If you want to use LoRA (Low-Rank Adaptation) to save resources:
 lora_config = LoraConfig(
-    r=8,  # ранг матрицы
+    r=8,  # Rank of the matrix
     lora_alpha=16,
-    target_modules=["q_proj", "v_proj"],  # целевые слои
+    target_modules=["q_proj", "v_proj"],  # Target layers
     lora_dropout=0.05,
     bias="none",
     task_type="CAUSAL_LM"
@@ -48,6 +47,7 @@ lora_config = LoraConfig(
 
 model = get_peft_model(model, lora_config)
 
+# Configure training arguments
 training_args = TrainingArguments(
     output_dir="crystall_generation/finetune/results/",
     evaluation_strategy="epoch",
@@ -58,12 +58,14 @@ training_args = TrainingArguments(
     weight_decay=0.01,
     save_steps=500,
     save_total_limit=2,
-    logging_dir='crystall_generation/finetune/logs/',
-    logging_steps=10,
-    fp16=True,  # Использование mixed precision для ускорения
-    push_to_hub=False,  # Если вы хотите загрузить модель на Hugging Face Hub
+    logging_dir='crystall_generation/finetune/logs/',  # Directory for TensorBoard logs
+    logging_steps=10,  # Frequency of logging
+    fp16=True,  # Use mixed precision for faster training
+    push_to_hub=False,
+    report_to="tensorboard",  # Specify that we are using TensorBoard
 )
 
+# Create Trainer
 trainer = Trainer(
     model=model,
     args=training_args,
@@ -72,18 +74,29 @@ trainer = Trainer(
     tokenizer=tokenizer,
 )
 
-# Запуск обучения
+print("Start model training")
+
+# Start training
 trainer.train()
 
-from transformers import pipeline
-from transformers import AutoModelForCausalLM, TrainingArguments, Trainer
-from transformers import AutoTokenizer
+print("Model successfully trained")
 
-# Загрузка fine-tuned модели
+# Save the model and tokenizer
+model.save_pretrained("crystall_generation/models/fine_tuned_Llama-3.2-3b")
+tokenizer.save_pretrained("crystall_generation/models/fine_tuned_Llama-3.2-3b")
+
+print("Model saved")
+
+# Test the model
+from transformers import pipeline
+
+# Load fine-tuned model
 model = AutoModelForCausalLM.from_pretrained("crystall_generation/models/fine_tuned_Llama-3.2-3b")
 tokenizer = AutoTokenizer.from_pretrained("crystall_generation/models/fine_tuned_Llama-3.2-3b")
 
-# Создание пайплайна для генерации текста
+print("Start testing the model")
+
+# Create a text generation pipeline
 generator = pipeline("text-generation", model=model, tokenizer=tokenizer)
 input_text = "band_gap=0.0 spacegroup.number=139"
 output = generator(input_text, max_length=50)
