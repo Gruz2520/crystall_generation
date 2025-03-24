@@ -5,7 +5,7 @@ from peft import LoraConfig, get_peft_model
 from torch.utils.tensorboard import SummaryWriter  # For TensorBoard
 
 # Load CSV file
-df = pd.read_csv('crystall_generation/data/df_for_llama_m100.csv')
+df = pd.read_csv('crystall_generation/data/df_for_llama_mp20_slice.csv')
 
 # Convert DataFrame to Dataset
 dataset = Dataset.from_pandas(df)
