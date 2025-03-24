@@ -82,8 +82,8 @@ trainer.train()
 print("Model successfully trained")
 
 # Save the model and tokenizer
-model.save_pretrained("crystall_generation/models/fine_tuned_Llama-3.2-3b")
-tokenizer.save_pretrained("crystall_generation/models/fine_tuned_Llama-3.2-3b")
+model.save_pretrained("crystall_generation/models/fine_tuned_Llama-3.2-3b_slice")
+tokenizer.save_pretrained("crystall_generation/models/fine_tuned_Llama-3.2-3b_slice")
 
 print("Model saved")
 
@@ -91,8 +91,8 @@ print("Model saved")
 from transformers import pipeline
 
 # Load fine-tuned model
-model = AutoModelForCausalLM.from_pretrained("crystall_generation/models/fine_tuned_Llama-3.2-3b")
-tokenizer = AutoTokenizer.from_pretrained("crystall_generation/models/fine_tuned_Llama-3.2-3b")
+model = AutoModelForCausalLM.from_pretrained("crystall_generation/models/fine_tuned_Llama-3.2-3b_slice")
+tokenizer = AutoTokenizer.from_pretrained("crystall_generation/models/fine_tuned_Llama-3.2-3b_slice")
 
 print("Start testing the model")
 
