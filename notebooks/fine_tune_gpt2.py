@@ -84,7 +84,7 @@ tokenizer = AutoTokenizer.from_pretrained(f"models/{model_name_new}")
 print("Start testing the model")
 
 # Test input
-input_text = "band_gap=0.0 e_form=-0.7"
+input_text = "0.0 -0.7 ->"
 encoded_input = tokenizer(input_text, return_tensors="pt")
 
 # Generate text
