@@ -7,7 +7,7 @@ from torch.utils.tensorboard import SummaryWriter  # For TensorBoard
 # Load CSV file
 df = pd.read_csv('crystall_generation/data/df_for_llama_mp20_slice_plus.csv')
 
-model_name = "fine_tuned_Llama-3.2-3b_slice_plus"
+model_name_new = "fine_tuned_Llama-3.2-3b_slice_plus"
 
 # Convert DataFrame to Dataset
 dataset = Dataset.from_pandas(df)
@@ -51,7 +51,7 @@ model = get_peft_model(model, lora_config)
 
 # Configure training arguments
 training_args = TrainingArguments(
-    output_dir=f"crystall_generation/finetune/results/{model_name}",
+    output_dir=f"crystall_generation/finetune/results/{model_name_new}",
     evaluation_strategy="epoch",
     learning_rate=2e-5,
     per_device_train_batch_size=4,
@@ -60,7 +60,7 @@ training_args = TrainingArguments(
     weight_decay=0.01,
     save_steps=500,
     save_total_limit=2,
-    logging_dir=f'crystall_generation/finetune/logs/{model_name}',  # Directory for TensorBoard logs
+    logging_dir=f'crystall_generation/finetune/logs/{model_name_new}',  # Directory for TensorBoard logs
     logging_steps=10,  # Frequency of logging
     fp16=True,  # Use mixed precision for faster training
     push_to_hub=False,
@@ -84,8 +84,8 @@ trainer.train()
 print("Model successfully trained")
 
 # Save the model and tokenizer
-model.save_pretrained(f"models/{model_name}")
-tokenizer.save_pretrained(f"models/{model_name}")
+model.save_pretrained(f"models/{model_name_new}")
+tokenizer.save_pretrained(f"models/{model_name_new}")
 
 print("Model saved")
 
@@ -93,8 +93,8 @@ print("Model saved")
 from transformers import pipeline
 
 # Load fine-tuned model
-model = AutoModelForCausalLM.from_pretrained(f"models/{model_name}")
-tokenizer = AutoTokenizer.from_pretrained(f"models/{model_name}")
+model = AutoModelForCausalLM.from_pretrained(f"models/{model_name_new}")
+tokenizer = AutoTokenizer.from_pretrained(f"models/{model_name_new}")
 
 print("Start testing the model")
 
