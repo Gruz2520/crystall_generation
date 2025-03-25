@@ -25,10 +25,20 @@ validation_dataset = Dataset.from_pandas(validation_df)
 
 # Шаг 2: Подготовка датасета
 def preprocess_function(examples):
-    # Формирование входных данных из колонок 'input' и 'output'
-    inputs = [f"{inp} -> {out}" for inp, out in zip(examples['input'], examples['output'])]
-    return tokenizer(inputs, truncation=True, padding='max_length', max_length=128)
-
+    # Формирование входных данных
+    inputs = [f"{inp} ->" for inp in examples['input']]
+    targets = examples['output']
+    
+    # Токенизация входных данных
+    model_inputs = tokenizer(inputs, truncation=True, padding='max_length', max_length=128)
+    
+    # Токенизация целевых меток
+    labels = tokenizer(targets, truncation=True, padding='max_length', max_length=128)
+    
+    # Добавление labels в модельные данные
+    model_inputs["labels"] = labels["input_ids"]
+    
+    return model_inputs
 # Применяем препроцессинг
 tokenized_train_dataset = train_dataset.map(preprocess_function, batched=True)
 tokenized_validation_dataset = validation_dataset.map(preprocess_function, batched=True)
