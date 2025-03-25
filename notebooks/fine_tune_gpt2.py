@@ -1,9 +1,8 @@
 import os
 import pandas as pd
-from datasets import Dataset, load_dataset
+from datasets import Dataset
 from transformers import AutoModelForCausalLM, TrainingArguments, Trainer, AutoTokenizer
 from peft import LoraConfig, get_peft_model
-from torch.utils.tensorboard import SummaryWriter
 
 model_name_new = "fine_tuned_gpt2"
 
@@ -16,25 +15,29 @@ model = AutoModelForCausalLM.from_pretrained(model_name)
 tokenizer.add_special_tokens({'pad_token': '[PAD]'})
 model.resize_token_embeddings(len(tokenizer))
 
+# Шаг 1: Загрузка CSV файла через pandas
+train_df = pd.read_csv('crystall_generation/data/train.csv')
+validation_df = pd.read_csv('crystall_generation/data/validation.csv')
+
+# Преобразование DataFrame в Dataset
+train_dataset = Dataset.from_pandas(train_df)
+validation_dataset = Dataset.from_pandas(validation_df)
+
 # Шаг 2: Подготовка датасета
 def preprocess_function(examples):
+    # Формирование входных данных из колонок 'input' и 'output'
     inputs = [f"{inp} -> {out}" for inp, out in zip(examples['input'], examples['output'])]
-    return tokenizer(inputs, truncation=True, padding='max_length', max_length=128, return_tensors="pt")
-
-# Загрузите ваш датасет (например, из CSV файла)
-dataset = load_dataset('csv', data_files={
-    'train': 'crystall_generation/data/train_gpt2.csv',
-    'validation': 'crystall_generation/data/validation_gpt2.csv'
-}, keep_in_memory=True)
+    return tokenizer(inputs, truncation=True, padding='max_length', max_length=128)
 
 # Применяем препроцессинг
-tokenized_datasets = dataset.map(preprocess_function, batched=True)
+tokenized_train_dataset = train_dataset.map(preprocess_function, batched=True)
+tokenized_validation_dataset = validation_dataset.map(preprocess_function, batched=True)
 
-# Create directories for logs and results
+# Создание директорий для логов и результатов
 os.makedirs(f"crystall_generation/finetune/results/{model_name_new}", exist_ok=True)
 os.makedirs(f"crystall_generation/finetune/logs/{model_name_new}", exist_ok=True)
 
-# Configure training arguments
+# Настройка параметров обучения
 training_args = TrainingArguments(
     output_dir=f"crystall_generation/finetune/results/{model_name_new}",
     evaluation_strategy="epoch",
@@ -52,42 +55,42 @@ training_args = TrainingArguments(
     report_to="tensorboard",
 )
 
-# Create Trainer
+# Создание Trainer
 trainer = Trainer(
     model=model,
     args=training_args,
-    train_dataset=tokenized_datasets['train'],
-    eval_dataset=tokenized_datasets['validation'],
+    train_dataset=tokenized_train_dataset,
+    eval_dataset=tokenized_validation_dataset,
     tokenizer=tokenizer,
 )
 
 print("Start model training")
 
-# Start training
+# Начало обучения
 trainer.train()
 
 print("Model successfully trained")
 
-# Save the model and tokenizer
+# Сохранение модели и токенизатора
 model.save_pretrained(f"models/{model_name_new}")
 tokenizer.save_pretrained(f"models/{model_name_new}")
 
 print("Model saved")
 
-# Test the model
+# Тестирование модели
 from transformers import pipeline
 
-# Load fine-tuned model
+# Загрузка дообученной модели
 model = AutoModelForCausalLM.from_pretrained(f"models/{model_name_new}")
 tokenizer = AutoTokenizer.from_pretrained(f"models/{model_name_new}")
 
 print("Start testing the model")
 
-# Test input
-input_text = "0.0 -0.7 ->"
+# Тестовый вход
+input_text = "band_gap=0.0 e_form=-0.7"
 encoded_input = tokenizer(input_text, return_tensors="pt")
 
-# Generate text
+# Генерация текста
 output = model.generate(**encoded_input, max_length=50)
 decoded_output = tokenizer.decode(output[0], skip_special_tokens=True)
 
