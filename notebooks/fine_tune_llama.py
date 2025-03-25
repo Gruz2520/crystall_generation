@@ -4,6 +4,8 @@ from transformers import AutoModelForCausalLM, TrainingArguments, Trainer, AutoT
 from peft import LoraConfig, get_peft_model
 from torch.utils.tensorboard import SummaryWriter  # For TensorBoard
 
+model_name = "fine_tuned_Llama-3.2-3b_slice"
+
 # Load CSV file
 df = pd.read_csv('crystall_generation/data/df_for_llama_mp20_slice.csv')
 
@@ -49,7 +51,7 @@ model = get_peft_model(model, lora_config)
 
 # Configure training arguments
 training_args = TrainingArguments(
-    output_dir="crystall_generation/finetune/results/",
+    output_dir=f"crystall_generation/finetune/results/{model_name}",
     evaluation_strategy="epoch",
     learning_rate=2e-5,
     per_device_train_batch_size=4,
@@ -58,7 +60,7 @@ training_args = TrainingArguments(
     weight_decay=0.01,
     save_steps=500,
     save_total_limit=2,
-    logging_dir='crystall_generation/finetune/logs/',  # Directory for TensorBoard logs
+    logging_dir=f'crystall_generation/finetune/logs/{model_name}',  # Directory for TensorBoard logs
     logging_steps=10,  # Frequency of logging
     fp16=True,  # Use mixed precision for faster training
     push_to_hub=False,
@@ -82,8 +84,8 @@ trainer.train()
 print("Model successfully trained")
 
 # Save the model and tokenizer
-model.save_pretrained("crystall_generation/models/fine_tuned_Llama-3.2-3b_slice")
-tokenizer.save_pretrained("crystall_generation/models/fine_tuned_Llama-3.2-3b_slice")
+model.save_pretrained(f"models/{model_name}")
+tokenizer.save_pretrained(f"models/{model_name}")
 
 print("Model saved")
 
@@ -91,13 +93,13 @@ print("Model saved")
 from transformers import pipeline
 
 # Load fine-tuned model
-model = AutoModelForCausalLM.from_pretrained("crystall_generation/models/fine_tuned_Llama-3.2-3b_slice")
-tokenizer = AutoTokenizer.from_pretrained("crystall_generation/models/fine_tuned_Llama-3.2-3b_slice")
+model = AutoModelForCausalLM.from_pretrained(f"models/{model_name}")
+tokenizer = AutoTokenizer.from_pretrained(f"models/{model_name}")
 
 print("Start testing the model")
 
 # Create a text generation pipeline
 generator = pipeline("text-generation", model=model, tokenizer=tokenizer)
-input_text = "band_gap=0.0 spacegroup.number=139"
+input_text = "band_gap=0.0 e_form=-0.7"
 output = generator(input_text, max_length=50)
 print(output)
