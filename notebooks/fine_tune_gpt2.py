@@ -16,8 +16,8 @@ tokenizer.add_special_tokens({'pad_token': '[PAD]'})
 model.resize_token_embeddings(len(tokenizer))
 
 # Шаг 1: Загрузка CSV файла через pandas
-train_df = pd.read_csv('crystall_generation/data/train.csv')
-validation_df = pd.read_csv('crystall_generation/data/validation.csv')
+train_df = pd.read_csv('crystall_generation/data/train_gpt2.csv')
+validation_df = pd.read_csv('crystall_generation/data/validation_gpt2.csv')
 
 # Преобразование DataFrame в Dataset
 train_dataset = Dataset.from_pandas(train_df)
@@ -87,7 +87,7 @@ tokenizer = AutoTokenizer.from_pretrained(f"models/{model_name_new}")
 print("Start testing the model")
 
 # Тестовый вход
-input_text = "band_gap=0.0 e_form=-0.7"
+input_text = "0.0 -0.7 ->"
 encoded_input = tokenizer(input_text, return_tensors="pt")
 
 # Генерация текста
