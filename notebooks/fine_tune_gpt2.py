@@ -25,7 +25,7 @@ def preprocess_function(examples):
 dataset = load_dataset('csv', data_files={
     'train': 'crystall_generation/data/train_gpt2.csv',
     'validation': 'crystall_generation/data/validation_gpt2.csv'
-})
+}, keep_in_memory=True)
 
 # Применяем препроцессинг
 tokenized_datasets = dataset.map(preprocess_function, batched=True)
