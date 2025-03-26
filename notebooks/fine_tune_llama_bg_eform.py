@@ -65,17 +65,17 @@ training_args = TrainingArguments(
     output_dir=f"crystall_generation/finetune/results/{model_name_new}",
     evaluation_strategy="epoch",
     learning_rate=2e-5,
-    per_device_train_batch_size=4,
-    per_device_eval_batch_size=4,
+    per_device_train_batch_size=24,
+    per_device_eval_batch_size=24,
     num_train_epochs=3,
     weight_decay=0.01,
     save_steps=500,
-    save_total_limit=2,
-    logging_dir=f'crystall_generation/finetune/logs/{model_name_new}',  # Directory for TensorBoard logs
-    logging_steps=100,  # Frequency of logging
-    fp16=False,  # Use mixed precision for faster training
+    save_total_limit=20,
+    logging_dir=f'crystall_generation/finetune/logs/{model_name_new}',
+    logging_steps=100,
+    fp16=True,
     push_to_hub=False,
-    report_to="tensorboard",  # Specify that we are using TensorBoard
+    report_to="tensorboard",
 )
 
 # Create Trainer
