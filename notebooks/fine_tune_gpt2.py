@@ -47,18 +47,6 @@ tokenized_validation_dataset = validation_dataset.map(preprocess_function, batch
 os.makedirs(f"crystall_generation/finetune/results/{model_name_new}", exist_ok=True)
 os.makedirs(f"crystall_generation/finetune/logs/{model_name_new}", exist_ok=True)
 
-# If you want to use LoRA (Low-Rank Adaptation) to save resources:
-lora_config = LoraConfig(
-    r=8,  # Rank of the matrix
-    lora_alpha=16,
-    target_modules=["q_proj", "v_proj"],  # Target layers
-    lora_dropout=0.05,
-    bias="none",
-    task_type="CAUSAL_LM"
-)
-
-model = get_peft_model(model, lora_config)
-
 # Настройка параметров обучения
 training_args = TrainingArguments(
     output_dir=f"crystall_generation/finetune/results/{model_name_new}",
