@@ -5,7 +5,7 @@ from transformers import AutoModelForCausalLM, TrainingArguments, Trainer, AutoT
 from peft import LoraConfig, get_peft_model
 from torch.utils.tensorboard import SummaryWriter  # For TensorBoard
 
-model_name_new = "fine_tuned_Llama-3.2-3b_bg_eform"
+model_name_new = "fine_tuned_Llama-3.2-3b_bg_eform_alex_full"
 
 # Load LLaMA tokenizer
 model_name = "crystall_generation/models/llama"  # Specify the actual version of LLaMA
@@ -17,8 +17,8 @@ tokenizer.add_special_tokens({'pad_token': '[PAD]'})
 model.resize_token_embeddings(len(tokenizer))
 
 # Шаг 1: Загрузка CSV файла через pandas
-train_df = pd.read_csv('crystall_generation/data/train_gpt2.csv')
-validation_df = pd.read_csv('crystall_generation/data/validation_gpt2.csv')
+train_df = pd.read_csv('crystall_generation/data/train_alex_full_gpt2.csv')
+validation_df = pd.read_csv('crystall_generation/data/validation_alex_full_gpt2.csv')
 
 # Преобразование DataFrame в Dataset
 train_dataset = Dataset.from_pandas(train_df)
