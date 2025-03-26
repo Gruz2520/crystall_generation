@@ -1,4 +1,5 @@
 import pandas as pd
+import os
 from datasets import Dataset
 from transformers import AutoModelForCausalLM, TrainingArguments, Trainer, AutoTokenizer
 from peft import LoraConfig, get_peft_model
@@ -81,8 +82,8 @@ training_args = TrainingArguments(
 trainer = Trainer(
     model=model,
     args=training_args,
-    train_dataset=tokenized_dataset,
-    eval_dataset=tokenized_dataset,
+    train_dataset=tokenized_train_dataset,
+    eval_dataset=tokenized_validation_dataset,
     tokenizer=tokenizer,
 )
 print("Start model training")
