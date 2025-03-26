@@ -13,3 +13,4 @@ models/lora_finetuned_model_gpt2
 models/llama.tar.gz
 models/llama_split_parts
 notebooks/archive.ipynb
+logs/
