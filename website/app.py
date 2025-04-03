@@ -76,7 +76,7 @@ def main():
     st.title("Генератор кристаллических структур на базе GPT-2")
     st.write("Введите параметры `band_gap` и `formation_energy`, а затем дополнительный текст.")
 
-    model_path = r"crystall_generation/models/fine_tuned_gpt2_on_alex_full/"
+    model_path = r"/crystall_generation/models/fine_tuned_gpt2_on_alex_full/"
 
     try:
         generator = load_model(model_path)
