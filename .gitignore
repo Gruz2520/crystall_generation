@@ -16,3 +16,4 @@ notebooks/archive.ipynb
 logs/
 data/alexandria/alexandria_full.csv
 models/gpt2_alexf.zip
+models/fine_tuned_gpt2_on_alex_full/model.safetensors

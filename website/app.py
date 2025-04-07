@@ -2,6 +2,16 @@ import os
 import streamlit as st
 from transformers import pipeline
 import re
+import importlib.util
+
+def unpacking_model():
+    unpacking_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'notebooks','scr', 'unpacking.py'))
+
+    spec = importlib.util.spec_from_file_location("unpacking", unpacking_path)
+    unpacking = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(unpacking)
+
+    unpacking.extract_multivolume_archive(r"models/model_arhive/model.7z.001", "models/fine_tuned_gpt2_on_alex_full/")
 
 os.environ["STREAMLIT_DISABLE_LOCAL_FILES_WATCHER"] = "true"
 
@@ -73,6 +83,10 @@ def validate_slices(slices_string):
     return result
 
 def main():
+    print("starting unpacking model")
+    unpacking_model()
+    print("model successfully extracted.")
+    
     st.title("Генератор кристаллических структур на базе GPT-2")
     st.write("Введите параметры `band_gap` и `formation_energy`, а затем дополнительный текст.")
 
@@ -85,7 +99,7 @@ def main():
         return
 
     st.subheader("Введите параметры:")
-    band_gap = st.number_input("Band Gap", value=0.0, step=0.1, format="%.2f")
+    band_gap = st.number_input("Band Gap", value=0.3, step=0.1, format="%.2f")
     formation_energy = st.number_input("Formation Energy", value=-0.7, step=0.1, format="%.2f")
 
     st.subheader("Введите дополнительный текст:")
@@ -102,7 +116,7 @@ def main():
     num_return_sequences = st.slider("Количество вариантов", 1, 10, 3)
 
     if st.button("Сгенерировать"):
-        with st.spinner("Генерация текста..."):
+        with st.spinner("Генерация кристаллических структур..."):
             results = generate_text(
                 input_text=prompt,
                 generator=generator,
