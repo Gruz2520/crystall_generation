@@ -18,7 +18,7 @@ os.environ["STREAMLIT_DISABLE_LOCAL_FILES_WATCHER"] = "true"
 @st.cache_resource
 def load_model(model_path):
     if not os.path.exists(model_path):
-        raise FileNotFoundError(f"Путь к модели '{model_path}' не существует. Проверьте путь.")
+        raise FileNotFoundError(f"The model path '{model_path}' does not exist. Please check the path.")
     return pipeline("text-generation", model=model_path)
 
 def generate_text(input_text, generator, max_length, temperature, num_return_sequences):
@@ -47,16 +47,16 @@ VALID_ATOMS = {
 
 def validate_slices(slices_string):
     """
-    Валидация строки SLICES и вычисление процента соответствия формату.
+    Validation of SLICES string and calculation of format compliance percentage.
     
     Args:
-        slices_string (str): Сгенерированная строка SLICES.
+        slices_string (str): Generated SLICES string.
     
     Returns:
-        dict: Словарь с результатами валидации:
-            - 'is_valid' (bool): Соответствует ли строка формату SLICES.
-            - 'valid_percentage' (float): Процент соответствия формату SLICES.
-            - 'errors' (list): Список ошибок, если они есть.
+        dict: Dictionary with validation results:
+            - 'is_valid' (bool): Whether the string matches the SLICES format.
+            - 'valid_percentage' (float): Percentage of compliance with the SLICES format.
+            - 'errors' (list): List of errors, if any.
     """
     result = {
         'is_valid': False,
@@ -72,7 +72,7 @@ def validate_slices(slices_string):
         if part in VALID_ATOMS or part in {'o', '+', '-'} or part.isdigit():
             valid_parts += 1
         else:
-            result['errors'].append(f"Недопустимый символ в позиции {i}: '{part}'")
+            result['errors'].append(f"Invalid symbol at position {i}: '{part}'")
     
     if total_parts > 0:
         result['valid_percentage'] = (valid_parts / total_parts) * 100
@@ -83,12 +83,12 @@ def validate_slices(slices_string):
     return result
 
 def main():
-    print("starting unpacking model")
+    print("Starting model unpacking")
     unpacking_model()
-    print("model successfully extracted.")
+    print("Model successfully extracted.")
     
-    st.title("Генератор кристаллических структур на базе GPT-2")
-    st.write("Введите параметры `band_gap` и `formation_energy`, а затем дополнительный текст.")
+    st.title("Crystal Structure Generator Based on GPT-2")
+    st.write("Enter `band_gap` and `formation_energy` parameters, then add additional text.")
 
     model_path = r"models/fine_tuned_gpt2_on_alex_full/"
 
@@ -98,25 +98,25 @@ def main():
         st.error(str(e))
         return
 
-    st.subheader("Введите параметры:")
+    st.subheader("Enter Parameters:")
     band_gap = st.number_input("Band Gap", value=0.3, step=0.1, format="%.2f")
     formation_energy = st.number_input("Formation Energy", value=-0.7, step=0.1, format="%.2f")
 
-    st.subheader("Введите дополнительный текст:")
-    additional_text = st.text_area("Текст:", height=100)
+    st.subheader("Enter Additional Text:")
+    additional_text = st.text_area("Text:", height=100)
 
     prompt = f"{additional_text} {band_gap} {formation_energy} ->"
 
-    st.subheader("Текстовая подсказка:")
+    st.subheader("Text Prompt:")
     st.write(prompt)
 
-    st.subheader("Настройте параметры генерации:")
-    max_length = st.slider("Максимальная длина текста", 10, 200, 50)
-    temperature = st.slider("Температура", 0.1, 1.0, 1.0)
-    num_return_sequences = st.slider("Количество вариантов", 1, 10, 3)
+    st.subheader("Set Generation Parameters:")
+    max_length = st.slider("Maximum Text Length", 10, 200, 50)
+    temperature = st.slider("Temperature", 0.1, 1.0, 1.0)
+    num_return_sequences = st.slider("Number of Variants", 1, 10, 3)
 
-    if st.button("Сгенерировать"):
-        with st.spinner("Генерация кристаллических структур..."):
+    if st.button("Generate"):
+        with st.spinner("Generating crystal structures..."):
             results = generate_text(
                 input_text=prompt,
                 generator=generator,
@@ -124,12 +124,12 @@ def main():
                 temperature=temperature,
                 num_return_sequences=num_return_sequences
             )
-        st.success("Генерация завершена!")
-        st.subheader("Результаты:")
+        st.success("Generation completed!")
+        st.subheader("Results:")
 
         for i, result in enumerate(results):
             generated_text = result["generated_text"]
-            st.write(f"Вариант {i + 1}:")
+            st.write(f"Variant {i + 1}:")
             st.write(generated_text)
 
             if "->" in generated_text:
@@ -139,11 +139,11 @@ def main():
                 slices_part = generated_text.strip()
 
             validation_result = validate_slices(slices_part)
-            st.write("**Показатели валидности:**")
-            st.write(f"- Валидность: {'✅ Да' if validation_result['is_valid'] else '❌ Нет'}")
-            st.write(f"- Процент соответствия: {validation_result['valid_percentage']:.2f}%")
+            st.write("**Validation Metrics:**")
+            st.write(f"- Validity: {'✅ Yes' if validation_result['is_valid'] else '❌ No'}")
+            st.write(f"- Compliance Percentage: {validation_result['valid_percentage']:.2f}%")
             if validation_result['errors']:
-                st.write("- Ошибки:")
+                st.write("- Errors:")
                 for error in validation_result['errors']:
                     st.write(f"  - {error}")
 
