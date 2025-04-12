@@ -17,3 +17,9 @@ logs/
 data/alexandria/alexandria_full.csv
 models/gpt2_alexf.zip
 models/model_arhive/model.safetensors
+data/df_for_llama_bg_eform_slice.csv
+data/df_for_llama_bg_eform_slice+.csv
+data/df_for_llama_m100.csv
+data/df_for_llama_mp20_slice.csv
+data/df_for_llama_mp20_slice_plus.csv
+data/df_for_llama.csv

@@ -66,6 +66,34 @@ The `-f` or `--filter` flag enables dataset filtering for the main dataset.
 A public web interface is available for testing and using the model:
 [Crystal Generation Web App](https://gencry.streamlit.app/)
 
+## Loading the Model
+
+You can load model after unpack it with [unpacking script](unpacking-data-and-models)
+
+```python
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+model = AutoModelForCausalLM.from_pretrained("models/fine_tuned_gpt2_on_alex_full")
+tokenizer = AutoTokenizer.from_pretrained("models/fine_tuned_gpt2_on_alex_full")
+```
+
+### Generating Crystal Structures
+
+```python
+input_text = "0.3-0.7->"
+inputs = tokenizer(input_text, return_tensors="pt")
+outputs = model.generate(**inputs, max_length=100)
+generated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
+print(generated_text)
+```
+
+### Using Contextual Prompts
+
+```python
+prompt = "Generate a crystal with high stability and reflection index "
+input_text = prompt + "0.3 -0.7->"
+```
+
 ## Citation
 If you use this work, please cite our project appropriately.
 
