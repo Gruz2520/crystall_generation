@@ -58,13 +58,13 @@ The model was fine-tuned using the following configuration:
 
 ### Training Loss Curve
 
-![Training Loss Curve](plots\train_loss_of_model.png)
+![Training Loss Curve](..\plots\train_loss_of_model.png)
 
 _Description: The training loss stabilized at approximately 1.77 after several thousand steps, indicating successful adaptation to the extended dataset._
 
 ### Sample Efficiency Graph
 
-![Sample Efficiency](plots\validation_comparison_plot.png)
+![Sample Efficiency](..\plots\validation_comparison_plot.png)
 
 _Description: The graph demonstrates how validity improves with increased sample generation. The `gpt2_with_alex_p` model reaches 100% validity with 9 samples._
 
